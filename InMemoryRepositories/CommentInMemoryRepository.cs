@@ -3,7 +3,7 @@ using RepositoryContracts;
 
 namespace InMemoryRepositories;
 
-public class CommentInMemoryRepository
+public class CommentInMemoryRepository : ICommentRepository 
 {
     public List<Comment> comments;
 
@@ -40,7 +40,8 @@ public class CommentInMemoryRepository
         return Task.CompletedTask;
     }
     
-    public Task<Comment> getSingleAsync(int id)
+
+    public Task<Comment> GetSingleAsync(int id)
     {
         Comment? comment = comments.SingleOrDefault(c => c.id == id);
         if (comment is null)

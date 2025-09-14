@@ -1,11 +1,23 @@
-﻿using CLI.UI;
-using InMemoryRepositories;
+﻿using CLI.UI.ManagePosts;
+using CLI.UI.ManageUsers;
 using RepositoryContracts;
+namespace CLI.UI;
 
-Console.WriteLine("Starting CLI Application...");
-IUserRepository userRepository = new UserInMemoryRepository();
-ICommentRepository userCommentRepository = new CommentInMemoryRepository();
-IPostRepository postRepository = new PostInMemoryRepository();
+public class CliApp
+{
+    private readonly IUserRepository userRepository;
+    private readonly ICommentRepository commentRepository;
+    private readonly IPostRepository postRepository;
+    private bool running;
+    
+    private ManagePostView managePostView;
+    private ManageUserView manageUserView;
 
-ICliApp cliApp = new CliApp(userRepository, userCommentRepository, postRepository);
-await cliApp.StartAsync();
+    public CliApp(IUserRepository userRepository, ICommentRepository commentRepository, IPostRepository postRepository)
+    {
+        this.userRepository = userRepository;
+        this.commentRepository = commentRepository;
+        this.postRepository = postRepository;
+    }
+}
+
