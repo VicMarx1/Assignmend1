@@ -10,10 +10,10 @@ public class CliApp
     private readonly ICommentRepository commentRepository;
     private readonly IPostRepository postRepository;
     private bool running;
-
+/*
     private ManagePostsView managePostsView;
     private ManageUsersView manageUsersView;
-
+*/
     public CliApp(IUserRepository userRepository,
         ICommentRepository commentRepository, IPostRepository postRepository)
     {
@@ -27,10 +27,12 @@ public class CliApp
         running = true;
         while (running)
         {
+            Console.WriteLine("=== Main Menu ===");
             Console.WriteLine("Select an option:");
             Console.WriteLine("[1] Manage Posts \n" + "[2] Manage Users \n" + "[3] Exit");
+            Console.WriteLine("=================");
             int? selection = int.Parse(Console.ReadLine());
-            switch (selection)
+          /*  switch (selection)
             {
                 case 1:
                     if (managePostsView is null)
@@ -53,7 +55,7 @@ public class CliApp
                 default:
                     running = false;
                     break;
-            }
+            }*/
         }
     }
 }
