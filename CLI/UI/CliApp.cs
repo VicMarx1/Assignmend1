@@ -4,7 +4,7 @@ using RepositoryContracts;
 
 Console.WriteLine("Starting CLI Application...");
 IUserRepository userRepository = new UserInMemoryRepository();
-CommentInMemoryRepository userCommentRepository = new CommentInMemoryRepository();
+ICommentRepository userCommentRepository = new CommentInMemoryRepository();
 IPostRepository postRepository = new PostInMemoryRepository();
 
 ICliApp cliApp = new CliApp(userRepository, userCommentRepository, postRepository);
