@@ -8,9 +8,8 @@ public class CliApp
     private readonly ICommentRepository commentRepository;
     private readonly IPostRepository postRepository;
     private readonly IUserRepository userRepository;
-
-
-    private ManagePostsView managePostsView;
+    
+    private ManagePostView managePostsView;
 
     private bool running;
 //    private ManageUsersView manageUsersView;
@@ -37,12 +36,12 @@ public class CliApp
             {
                 case 1:
                     if (managePostsView is null)
-                        managePostsView = new ManagePostsView(postRepository,
+                        managePostsView = new ManagePostView(postRepository,
                             commentRepository, this);
 
                     await managePostsView.ShowOptions();
                     break;
-                /*   case 2:
+                   case 2:
                        if (manageUsersView is null)
                        {
                            manageUsersView =
@@ -53,7 +52,7 @@ public class CliApp
                        break;
                    default:
                        running = false;
-                       break;*/
+                       break;
             }
         }
     }

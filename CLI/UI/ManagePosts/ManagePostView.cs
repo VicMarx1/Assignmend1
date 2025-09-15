@@ -9,7 +9,7 @@ public class ManagePostView
     private readonly IPostRepository postRepository;
     private CreatePostView createPostView;
 
-    private ListPostView listPostView;
+    //private ListPostView listPostView;
     private bool running;
 
     public ManagePostView(IPostRepository postRepository,
@@ -25,14 +25,15 @@ public class ManagePostView
         running = true;
         while (running)
         {
-            Console.WriteLine("Select an option:");
-            Console.WriteLine("====Manages Posts====" +
+            Console.WriteLine();
+            Console.WriteLine("====Manages Posts====\n" +
+                              "Select an option:\n"+
                               "[1] List Posts \n" +
                               "[2] Create Post \n" +
                               "[3]Back to Main Menu\n" +
-                              "====================");
+                              "=====================");
             int? selection = int.Parse(Console.ReadLine());
-            switch (selection)
+           switch (selection)
             {
                 case 1:
                     if (listPostView is null) listPostView = new ListPostView(postRepository, commentRepository, this);
