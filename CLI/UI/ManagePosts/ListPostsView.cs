@@ -44,7 +44,7 @@ public class ListPostsView
                         break;
                     }
 
-                    if (PostView is null) postView = new PostView(commentRepository, selecteedPost, this);
+                    if (postView is null) postView = new PostView(commentRepository, selecteedPost, this);
 
                     await postView.ShowPost();
                     break;

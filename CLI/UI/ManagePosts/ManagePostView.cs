@@ -9,7 +9,7 @@ public class ManagePostView
     private readonly IPostRepository postRepository;
     private CreatePostView createPostView;
 
-    //private ListPostView listPostView;
+    private ListPostsView listPostView;
     private bool running;
 
     public ManagePostView(IPostRepository postRepository,
@@ -36,7 +36,7 @@ public class ManagePostView
            switch (selection)
             {
                 case 1:
-                    if (listPostView is null) listPostView = new ListPostView(postRepository, commentRepository, this);
+                    if (listPostView is null) listPostView = new ListPostsView(postRepository, commentRepository, this);
 
                     await listPostView.ListPosts();
                     break;

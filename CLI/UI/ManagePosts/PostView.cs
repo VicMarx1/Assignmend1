@@ -1,4 +1,5 @@
 ﻿using Entities;
+using CLI.UI.ManageComments;
 using RepositoryContracts;
 
 namespace CLI.UI.ManagePosts;
@@ -9,7 +10,7 @@ public class PostView
     private readonly ListPostsView listPostsView;
     private readonly Task<Post> post;
 
-   // private ListCommentsView listCommentsView;
+   private ListCommentsView listCommentsView;
 
     public PostView(ICommentRepository commentRepository, Task<Post> post, ListPostsView listPostsView)
     {

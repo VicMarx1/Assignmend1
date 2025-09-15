@@ -8,18 +8,17 @@ public class ListCommentsView
 {
     private readonly ICommentRepository commentRepository;
     private Task<Post> post;
-    private readonly IUserRepository userRepository;
-    private readonly IPostRepository postRepository;
+    private readonly PostView postView;
     private bool running;
-    
-    private CommentView CommentView;
 
-    public ListCommentsView(ICommentRepository commentRepository, IUserRepository userRepository,
-        IPostRepository postRepository)
+    private CommentView commentView;
+    private CreateCommentView createCommentView;
+
+    public ListCommentsView(ICommentRepository commentRepository,Task<Post> post, PostView postView)
     {
         this.commentRepository = commentRepository;
-        this.userRepository = userRepository;
-        this.postRepository = postRepository;
+        this.post = post;
+        this.postView = postView;
     }
 
     public async Task ListComments()
@@ -32,8 +31,21 @@ public class ListCommentsView
             {
                 Console.WriteLine($"User: {comment.UserId} {comment.Id} \n Comment:\n {comment.Body}");
             }
-            Console.WriteLine();
-            
+            Console.WriteLine("===Comment Option===\n" + "Select an option:\n" + "[1] Add Comment\n" +
+                              "[2] Edit Comment\n" + "[3] Delete Comment\n" + "[4] Back to Post Menu\n" + "===================");
+                              int? selcection = int.Parse(Console.ReadLine());
+
+                              switch (selcection)
+                              {
+                                  case 1:
+                                      if (createCommentView is null)
+                                      {
+                                          createCommentView = new CreateCommentView(commentRepository, this, post);
+                                      }
+                                      await createCommentView.CreateComment();
+                                      break;
+                              }
+
         }
     }
 
