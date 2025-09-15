@@ -2,8 +2,8 @@
 
 public class Post
 {
-    public int id { set; get; }
-    public string title { set; get; }
-    public string body { set; get; }
-    public int userId { set; get; }
+    public int Id { set; get; }
+    public string Title { set; get; }
+    public string Body { set; get; }
+    public int UserId { set; get; }
 }

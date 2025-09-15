@@ -9,8 +9,8 @@ public class PostInMemoryRepository : IPostRepository
 
     public Task<Post> AddAsync(Post post)
     {
-        post.id = posts.Any()
-            ? posts.Max(p => p.id) + 1
+        post.Id = posts.Any()
+            ? posts.Max(p => p.Id) + 1
             : 1;
         posts.Add(post);
         return Task.FromResult(post);
@@ -18,11 +18,8 @@ public class PostInMemoryRepository : IPostRepository
 
     public Task UpdateAsync(Post post)
     {
-        Post? existingPost = posts.SingleOrDefault(p => p.id == post.id);
-        if (existingPost is null)
-        {
-            throw new InvalidOperationException($"Post with id: {post.id} not found");
-        }
+        var existingPost = posts.SingleOrDefault(p => p.Id == post.Id);
+        if (existingPost is null) throw new InvalidOperationException($"Post with id: {post.Id} not found");
 
         posts.Remove(existingPost);
         posts.Add(post);
@@ -32,22 +29,16 @@ public class PostInMemoryRepository : IPostRepository
 
     public Task DeleteAsync(int id)
     {
-        Post? postToRemove = posts.SingleOrDefault(p => p.id == id);
-        if (postToRemove is null)
-        {
-            throw new InvalidOperationException($"Post with id: {id} not found");
-        }
+        var postToRemove = posts.SingleOrDefault(p => p.Id == id);
+        if (postToRemove is null) throw new InvalidOperationException($"Post with id: {id} not found");
         posts.Remove(postToRemove);
         return Task.CompletedTask;
     }
 
     public Task<Post> GetSingleAsync(int id)
     {
-        Post? post = posts.SingleOrDefault(p => p.id == id);
-        if (post == null)
-        {
-            throw new InvalidOperationException($"Post with id: {id} not found");
-        }
+        var post = posts.SingleOrDefault(p => p.Id == id);
+        if (post == null) throw new InvalidOperationException($"Post with id: {id} not found");
         return Task.FromResult(post);
     }
 

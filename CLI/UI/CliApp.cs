@@ -1,19 +1,20 @@
-﻿/*using CLI.UI.ManagePosts;
-using CLI.UI.ManageUsers;*/
-using RepositoryContracts;
-
+﻿using RepositoryContracts;
+//using CLI.UI.ManageUsers;
+using CLI.UI.ManagePosts;
 namespace CLI.UI;
 
 public class CliApp
 {
-    private readonly IUserRepository userRepository;
     private readonly ICommentRepository commentRepository;
     private readonly IPostRepository postRepository;
-    private bool running;
-/*
+    private readonly IUserRepository userRepository;
+
+
     private ManagePostsView managePostsView;
-    private ManageUsersView manageUsersView;
-*/
+
+    private bool running;
+//    private ManageUsersView manageUsersView;
+
     public CliApp(IUserRepository userRepository,
         ICommentRepository commentRepository, IPostRepository postRepository)
     {
@@ -30,32 +31,30 @@ public class CliApp
             Console.WriteLine("=== Main Menu ===");
             Console.WriteLine("Select an option:");
             Console.WriteLine("[1] Manage Posts \n" + "[2] Manage Users \n" + "[3] Exit");
-            Console.WriteLine("=================");
+            Console.WriteLine("=================\n");
             int? selection = int.Parse(Console.ReadLine());
-          /*  switch (selection)
+            switch (selection)
             {
                 case 1:
                     if (managePostsView is null)
-                    {
                         managePostsView = new ManagePostsView(postRepository,
                             commentRepository, this);
-                    }
 
                     await managePostsView.ShowOptions();
                     break;
-                case 2:
-                    if (manageUsersView is null)
-                    {
-                        manageUsersView =
-                            new ManageUsersView(userRepository, this);
-                    }
+                /*   case 2:
+                       if (manageUsersView is null)
+                       {
+                           manageUsersView =
+                               new ManageUsersView(userRepository, this);
+                       }
 
-                    await manageUsersView.ShowOptions();
-                    break;
-                default:
-                    running = false;
-                    break;
-            }*/
+                       await manageUsersView.ShowOptions();
+                       break;
+                   default:
+                       running = false;
+                       break;*/
+            }
         }
     }
 }
