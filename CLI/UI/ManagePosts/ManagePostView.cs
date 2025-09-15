@@ -27,13 +27,13 @@ public class ManagePostView
         {
             Console.WriteLine();
             Console.WriteLine("====Manages Posts====\n" +
-                              "Select an option:\n"+
+                              "Select an option:\n" +
                               "[1] List Posts \n" +
                               "[2] Create Post \n" +
-                              "[3]Back to Main Menu\n" +
+                              "[3] Back to Main Menu\n" +
                               "=====================");
             int? selection = int.Parse(Console.ReadLine());
-           switch (selection)
+            switch (selection)
             {
                 case 1:
                     if (listPostView is null) listPostView = new ListPostsView(postRepository, commentRepository, this);

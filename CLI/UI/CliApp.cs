@@ -1,6 +1,6 @@
-﻿using RepositoryContracts;
-using CLI.UI.ManageUsers;
-using CLI.UI.ManagePosts;
+﻿using CLI.UI.ManagePosts;
+using RepositoryContracts;
+
 namespace CLI.UI;
 
 public class CliApp
@@ -8,7 +8,7 @@ public class CliApp
     private readonly ICommentRepository commentRepository;
     private readonly IPostRepository postRepository;
     private readonly IUserRepository userRepository;
-    
+
     private ManagePostView managePostsView;
 
     private bool running;
@@ -41,18 +41,16 @@ public class CliApp
 
                     await managePostsView.ShowOptions();
                     break;
-                   case 2:
-                       if (manageUsersView is null)
-                       {
-                           manageUsersView =
-                               new ManageUsersView(userRepository, this);
-                       }
+              /* case 2:
+                    if (manageUsersView is null)
+                        manageUsersView =
+                            new ManageUsersView(userRepository, this);
 
-                       await manageUsersView.ShowOptions();
-                       break;
-                   default:
-                       running = false;
-                       break;
+                    await manageUsersView.ShowOptions();
+                    break;*/
+                default:
+                    running = false;
+                    break;
             }
         }
     }

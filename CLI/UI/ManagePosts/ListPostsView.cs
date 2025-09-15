@@ -1,5 +1,5 @@
 ﻿using RepositoryContracts;
-using Entities;
+
 namespace CLI.UI.ManagePosts;
 
 public class ListPostsView
@@ -54,5 +54,4 @@ public class ListPostsView
 
         managePostView.ShowOptions();
     }
-    
 }
