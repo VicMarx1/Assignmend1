@@ -45,6 +45,11 @@ public class ManagePostView
 
                     await createPostView.createPost();
                     break;
+                case 3:
+                    if (listPostView is null)
+                        listPostView = new ListPostsView(postRepository, commentRepository, this);
+                    running = false;
+                    break;
             }
         }
 

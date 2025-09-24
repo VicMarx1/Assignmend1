@@ -28,9 +28,14 @@ public class ListCommentsView
         {
             Console.WriteLine($"Listing Comments Form Post {post.Result.Title} [{post.Result.Id}]");
             foreach (var comment in commentRepository.GetAll().Where(c => c.PostId == post.Result.Id))
-                Console.WriteLine($"User: {comment.UserId} {comment.Id} \n Comment:\n {comment.Body}");
-            Console.WriteLine("===Comment Option===\n" + "Select an option:\n" + "[1] Add Comment\n" +
-                              "[2] Edit Comment\n" + "[3] Delete Comment\n" + "[4] Back to Post Menu\n" +
+                Console.WriteLine($"User: {comment.UserId} {comment.Id} \n " +
+                                  $"Comment:\n {comment.Body}");
+            Console.WriteLine("===Comment Option===\n" + 
+                              "Select an option:\n" + 
+                              "[1] Add Comment\n" +
+                              "[2] Edit Comment\n" + 
+                              "[3] Delete Comment\n" +
+                              "[4] Back to Post Menu\n" +
                               "===================");
             int? selcection = int.Parse(Console.ReadLine());
 

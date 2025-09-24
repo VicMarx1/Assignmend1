@@ -10,6 +10,7 @@ public class ListPostsView
 
     private PostView postView;
     private bool running;
+    
 
     public ListPostsView(IPostRepository postRepository, ICommentRepository commentRepository,
         ManagePostView managePostView)
@@ -49,6 +50,8 @@ public class ListPostsView
                     await postView.ShowPost();
                     break;
                 default: running = false; break;
+                
+                
             }
         }
 
