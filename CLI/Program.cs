@@ -1,11 +1,11 @@
 ﻿using CLI.UI;
-using InMemoryRepositories;
+using FileRepositories;
 using RepositoryContracts;
 
 Console.WriteLine("Starting CLI...");
-IUserRepository userRepository = new UserInMemoryRepository();
-ICommentRepository commentRepository = new CommentInMemoryRepository();
-IPostRepository postRepository = new PostInMemoryRepository();
+ICommentRepository commentRepository = new CommentFileRepository();
+IPostRepository postRepository = new PostFileRepository();
+IUserRepository userRepository = new UserFileRepository();
 
 var cliApp = new CliApp(userRepository, commentRepository, postRepository);
 await cliApp.StartAsync();
