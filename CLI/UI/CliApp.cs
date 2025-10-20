@@ -41,13 +41,13 @@ public class CliApp
 
                     await managePostsView.ShowOptions();
                     break;
-              /* case 2:
-                    if (manageUsersView is null)
-                        manageUsersView =
-                            new ManageUsersView(userRepository, this);
+                /* case 2:
+                      if (manageUsersView is null)
+                          manageUsersView =
+                              new ManageUsersView(userRepository, this);
 
-                    await manageUsersView.ShowOptions();
-                    break;*/
+                      await manageUsersView.ShowOptions();
+                      break;*/
                 default:
                     running = false;
                     break;

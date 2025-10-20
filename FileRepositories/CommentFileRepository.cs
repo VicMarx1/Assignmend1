@@ -1,6 +1,7 @@
 ﻿using System.Text.Json;
 using Entities;
 using RepositoryContracts;
+
 namespace FileRepositories;
 
 public class CommentFileRepository : ICommentRepository
@@ -9,71 +10,67 @@ public class CommentFileRepository : ICommentRepository
 
     public CommentFileRepository()
     {
-        if (!File.Exists(filePath))
-        {
-            File.WriteAllText(filePath, "[]");
-        }
+        if (!File.Exists(filePath)) File.WriteAllText(filePath, "[]");
     }
 
     public async Task<Comment> AddAsync(Comment comment)
     {
-        string json = await File.ReadAllTextAsync(filePath);
-        List<Comment> comments = JsonSerializer.Deserialize<List<Comment>>(json) ?? new();
+        var json = await File.ReadAllTextAsync(filePath);
+        var comments = JsonSerializer.Deserialize<List<Comment>>(json) ?? new List<Comment>();
 
-        int nextId = comments.Any() ? comments.Max(c => c.Id) + 1 : 1;
+        var nextId = comments.Any() ? comments.Max(c => c.Id) + 1 : 1;
         comment.Id = nextId;
-        
+
         comments.Add(comment);
 
-        string updatedJson = JsonSerializer.Serialize(comments);
+        var updatedJson = JsonSerializer.Serialize(comments);
 
         await File.WriteAllTextAsync(filePath, updatedJson);
 
         return comment;
     }
-    
+
     public async Task UpdateAsync(Comment comment)
     {
-        string json = await File.ReadAllTextAsync(filePath);
-        List<Comment> comments = JsonSerializer.Deserialize<List<Comment>>(json) ?? new();
-        
+        var json = await File.ReadAllTextAsync(filePath);
+        var comments = JsonSerializer.Deserialize<List<Comment>>(json) ?? new List<Comment>();
+
         var existing = comments.SingleOrDefault(p => p.Id == comment.Id)
                        ?? throw new InvalidOperationException($"Comment with id: {comment.Id} not found");
         comments.Remove(existing);
         comments.Add(comment);
 
-        string updatedJson = JsonSerializer.Serialize(comments);
+        var updatedJson = JsonSerializer.Serialize(comments);
         await File.WriteAllTextAsync(filePath, updatedJson);
     }
 
     public async Task DeleteAsync(int id)
     {
-        string json = await File.ReadAllTextAsync(filePath);
-        List<Comment> comments = JsonSerializer.Deserialize<List<Comment>>(json) ?? new();
-        
+        var json = await File.ReadAllTextAsync(filePath);
+        var comments = JsonSerializer.Deserialize<List<Comment>>(json) ?? new List<Comment>();
+
         var toRemove = comments.SingleOrDefault(p => p.Id == id)
                        ?? throw new InvalidOperationException($"Comment with id: {id} not found");
         comments.Remove(toRemove);
 
-        string updatedJson = JsonSerializer.Serialize(comments);
+        var updatedJson = JsonSerializer.Serialize(comments);
         await File.WriteAllTextAsync(filePath, updatedJson);
     }
 
     public async Task<Comment> GetSingleAsync(int id)
     {
-        string json = await File.ReadAllTextAsync(filePath);
-        List<Comment> comments = JsonSerializer.Deserialize<List<Comment>>(json) ?? new();
-        
+        var json = await File.ReadAllTextAsync(filePath);
+        var comments = JsonSerializer.Deserialize<List<Comment>>(json) ?? new List<Comment>();
+
         var comment = comments.SingleOrDefault(p => p.Id == id)
-                   ?? throw new InvalidOperationException($"Comment with id: {id} not found");
+                      ?? throw new InvalidOperationException($"Comment with id: {id} not found");
         return comment;
     }
-    
+
     public IQueryable<Comment> GetAll()
     {
-        string json = File.ReadAllText(filePath);
-        List<Comment> comments = JsonSerializer.Deserialize<List<Comment>>(json) ?? new();
+        var json = File.ReadAllText(filePath);
+        var comments = JsonSerializer.Deserialize<List<Comment>>(json) ?? new List<Comment>();
         return comments.AsQueryable();
     }
-
 }
