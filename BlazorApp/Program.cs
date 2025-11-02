@@ -35,6 +35,16 @@ app.MapRazorComponents<App>()
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
 
+builder.Services.AddHttpClient("Api", c => c.BaseAddress = new Uri("https://localhost:7005/"));
+
+builder.Services.AddScoped<IUserService, HttpUserService>();
+builder.Services.AddScoped<ICommentService, HttpCommentService>();
+builder.Services.AddScoped<IPostService, HttpPostService>();
+
+builder.Services.AddRazorPages();
+builder.Services.AddServerSideBlazor();
+
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
