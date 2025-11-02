@@ -3,6 +3,34 @@ using BlazorApp.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Services.AddRazorComponents()
+    .AddInteractiveServerComponents();
+
+var apiBase = builder.Configuration["ApiBaseUrl"]
+              ?? "http://localhost:5043/api";
+
+builder.Services.AddHttpClient<IUserService, HttpUserService>(c => { c.BaseAddress = new Uri(apiBase); });
+
+builder.Services.AddHttpClient<IPostService, HttpPostService>(c => { c.BaseAddress = new Uri(apiBase); });
+
+builder.Services.AddHttpClient<ICommentService, HttpCommentService>(c => { c.BaseAddress = new Uri(apiBase); });
+
+var app = builder.Build();
+
+if (!app.Environment.IsDevelopment())
+{
+    app.UseExceptionHandler("/Error", true);
+    app.UseHsts();
+}
+
+app.UseHttpsRedirection();
+app.UseStaticFiles();
+app.UseAntiforgery();
+
+app.MapRazorComponents<App>()
+    .AddInteractiveServerRenderMode();
+
+/*
 // Add services to the container.
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
@@ -23,6 +51,6 @@ app.UseStaticFiles();
 app.UseAntiforgery();
 
 app.MapRazorComponents<App>()
-    .AddInteractiveServerRenderMode();
+    .AddInteractiveServerRenderMode();*/
 
 app.Run();

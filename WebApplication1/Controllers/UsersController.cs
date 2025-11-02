@@ -1,11 +1,10 @@
 ﻿using ApiContracts;
-using Microsoft.AspNetCore.Mvc;
 using Entities;
+using Microsoft.AspNetCore.Mvc;
 using RepositoryContracts;
 
 [ApiController]
 [Route("api/[controller]")]
-
 public class UsersController : ControllerBase
 {
     private readonly IUserRepository userRepository;
@@ -18,14 +17,13 @@ public class UsersController : ControllerBase
     [HttpPost]
     public async Task<ActionResult<UserDto>> Create(UserCreateDto dto)
     {
-        if ( String.IsNullOrWhiteSpace(dto.UserName)) return BadRequest("UserName required");
-        
+        if (string.IsNullOrWhiteSpace(dto.UserName)) return BadRequest("UserName required");
+
         var exists = userRepository.GetAll().Any(u => u.Username == dto.UserName);
         if (exists) return Conflict("UserName already exists");
-        
-        var user = await userRepository.AddAsync(new User{Username = dto.UserName});
-        return CreatedAtAction(nameof(GetSingle), new {id = user.Id}, new UserDto(user.Id, user.Username));
 
+        var user = await userRepository.AddAsync(new User { Username = dto.UserName });
+        return CreatedAtAction(nameof(GetSingle), new { id = user.Id }, new UserDto(user.Id, user.Username));
     }
 
     [HttpGet("{id:int}")]
@@ -36,7 +34,7 @@ public class UsersController : ControllerBase
             var user = await userRepository.GetSingleAsync(id);
             return Ok(new UserDto(user.Id, user.Username));
         }
-        catch (InvalidOperationException )
+        catch (InvalidOperationException)
         {
             return NotFound();
         }
@@ -50,15 +48,15 @@ public class UsersController : ControllerBase
 
         if (!string.IsNullOrWhiteSpace(name))
             query = query.Where(u => u.Username.Contains(name));
-        
+
         var total = query.Count();
         var items = query
             .OrderBy(u => u.Id)
-            .Skip((page -1)*pageSize)
+            .Skip((page - 1) * pageSize)
             .Take(pageSize)
             .Select(u => new UserDto(u.Id, u.Username))
             .ToList();
-        
+
         Response.Headers.Add("X-Total-Count", total.ToString());
         return Ok(items);
     }
@@ -92,4 +90,4 @@ public class UsersController : ControllerBase
             return NotFound();
         }
     }
-}    
+}

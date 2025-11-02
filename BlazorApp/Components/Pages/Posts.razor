@@ -1,0 +1,43 @@
+﻿@page "/Posts"
+@using ApiContracts
+@using BlazorApp.Services
+@inject IPostService PostService
+
+<h3 class="mb-3">All Posts</h3>
+
+@if (posts is null)
+{
+    <p>Loading...</p>
+}
+else if (!posts.Any())
+{
+    <p>No posts found.</p>
+}
+else
+{
+    <ul class="list-group">
+        @foreach (var p in posts)
+        {
+            <li class="list-group-item">
+                <a href="@($"/Post/{p.Id}")"> class="fw-bold">@p.Title</a>
+            </li>
+        }
+    </ul>
+}
+
+@code {
+    private IEnumerable<PostDto>? posts;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            posts = await PostService.GetAllAsync();
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error loading posts: {ex.Message}");
+        }
+    }
+
+}

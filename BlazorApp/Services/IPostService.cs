@@ -9,5 +9,4 @@ public interface IPostService
     Task<PostDto> GetSingleAsync(int id);
     Task<IEnumerable<PostDto>> GetAllAsync();
     Task DeletePostAsync(int id);
-    
 }

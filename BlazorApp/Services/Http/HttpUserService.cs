@@ -1,5 +1,4 @@
-﻿using System.Net.Http.Json;
-using System.Text.Json;
+﻿using System.Text.Json;
 using ApiContracts;
 
 namespace BlazorApp.Services;
@@ -15,8 +14,8 @@ public class HttpUserService : IUserService
 
     public async Task<UserDto> AddUserAsync(UserCreateDto request)
     {
-        HttpResponseMessage httpResponse = await client.PostAsJsonAsync("users", request);
-        string response = await httpResponse.Content.ReadAsStringAsync();
+        var httpResponse = await client.PostAsJsonAsync("users", request);
+        var response = await httpResponse.Content.ReadAsStringAsync();
 
         if (!httpResponse.IsSuccessStatusCode)
             throw new Exception(response);
@@ -29,10 +28,10 @@ public class HttpUserService : IUserService
 
     public async Task UpdateUserAsync(int id, UserUpdateDto request)
     {
-        HttpResponseMessage httpResponse = await client.PutAsJsonAsync($"users/{id}", request);
+        var httpResponse = await client.PutAsJsonAsync($"users/{id}", request);
         if (!httpResponse.IsSuccessStatusCode)
         {
-            string msg = await httpResponse.Content.ReadAsStringAsync();
+            var msg = await httpResponse.Content.ReadAsStringAsync();
             throw new Exception(msg);
         }
     }
@@ -51,10 +50,10 @@ public class HttpUserService : IUserService
 
     public async Task DeleteUserAsync(int id)
     {
-        HttpResponseMessage response = await client.DeleteAsync($"Users/{id}");
+        var response = await client.DeleteAsync($"Users/{id}");
         if (!response.IsSuccessStatusCode)
         {
-            string msg = await response.Content.ReadAsStringAsync();
+            var msg = await response.Content.ReadAsStringAsync();
             throw new Exception(msg);
         }
     }

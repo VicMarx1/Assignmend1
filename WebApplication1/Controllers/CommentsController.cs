@@ -24,7 +24,7 @@ public class CommentController : ControllerBase
             UserId = dto.UserId,
             Body = dto.Body
         });
-            
+
         var result = new CommentDto(created.Id, created.PostId, created.UserId, created.Body);
         return CreatedAtAction(nameof(GetSingle), new { id = created.Id }, result);
     }
@@ -37,7 +37,6 @@ public class CommentController : ControllerBase
             var c = await commentRepository.GetSingleAsync(id);
             var dto = new CommentDto(c.Id, c.PostId, c.UserId, c.Body);
             return Ok(dto);
-            
         }
         catch (InvalidOperationException)
         {

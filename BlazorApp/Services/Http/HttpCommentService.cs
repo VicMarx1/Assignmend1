@@ -1,6 +1,4 @@
-﻿
-using System.Net.Http.Json;
-using System.Text.Json;
+﻿using System.Text.Json;
 using ApiContracts;
 
 namespace BlazorApp.Services;
@@ -16,8 +14,8 @@ public class HttpCommentService : ICommentService
 
     public async Task<CommentDto> AddCommentAsync(CommentCreateDto request)
     {
-        HttpResponseMessage httpResponse = await client.PostAsJsonAsync("Comment", request);
-        string response = await httpResponse.Content.ReadAsStringAsync();
+        var httpResponse = await client.PostAsJsonAsync("Comment", request);
+        var response = await httpResponse.Content.ReadAsStringAsync();
 
         if (!httpResponse.IsSuccessStatusCode)
             throw new Exception(response);
@@ -30,10 +28,10 @@ public class HttpCommentService : ICommentService
 
     public async Task UpdateCommentAsync(int id, CommentUpdateDto request)
     {
-        HttpResponseMessage httpResponse = await client.PutAsJsonAsync($"Comment/{id}", request);
+        var httpResponse = await client.PutAsJsonAsync($"Comment/{id}", request);
         if (!httpResponse.IsSuccessStatusCode)
         {
-            string msg = await httpResponse.Content.ReadAsStringAsync();
+            var msg = await httpResponse.Content.ReadAsStringAsync();
             throw new Exception(msg);
         }
     }
@@ -52,12 +50,11 @@ public class HttpCommentService : ICommentService
 
     public async Task DeleteCommentAsync(int id)
     {
-        HttpResponseMessage response = await client.DeleteAsync($"Comment/{id}");
+        var response = await client.DeleteAsync($"Comment/{id}");
         if (!response.IsSuccessStatusCode)
         {
-            string msg = await response.Content.ReadAsStringAsync();
+            var msg = await response.Content.ReadAsStringAsync();
             throw new Exception(msg);
         }
     }
 }
-    

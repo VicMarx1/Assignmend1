@@ -1,4 +1,5 @@
 ﻿using ApiContracts;
+
 namespace BlazorApp.Services;
 
 public interface ICommentService
@@ -8,5 +9,4 @@ public interface ICommentService
     Task<CommentDto> GetSingleAsync(int id);
     Task<IEnumerable<CommentDto>> GetAllAsync();
     Task DeleteCommentAsync(int id);
-    
 }
