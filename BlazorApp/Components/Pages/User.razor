@@ -1,0 +1,151 @@
+﻿@page "/User"
+@using System.ComponentModel.DataAnnotations
+@using ApiContracts
+@using BlazorApp.Services
+@inject IUserService UserService
+<h3>User</h3>
+
+<h2 class="mb-3 d-flex gap-2">Search:</h2>
+
+<div class="mb-3 d-flex gap-2">
+    <InputText @bind-Value="search" class="form-control" placeholder="Search by username..."/>
+    <button class="btn btn-primary" @onclick="LoadUsersAsync">Search</button>
+    <button class="btn btn-secondary" @onclick="ClearSearch">Clear</button>
+</div>
+
+@if (!string.IsNullOrWhiteSpace(Error))
+{
+    <div class="aleart alert-danger">@Error</div>
+}
+
+<div class="card mb-4">
+    <div class="card-header">Add new user</div>
+    <div class="card-body">
+        <EditForm Model="newUser" OnValidSubmit="AddUserAsync">
+            <DataAnnotationsValidator/>
+            <ValidationSummary/>
+
+            <div class="mb-3">
+                <label class="form-label">Username</label>
+                <InputText @bind-Value="newUser.UserName" class="form-control"/>
+                <ValidationMessage For="() => newUser.UserName"/>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Password</label>
+                <InputText @bind-Value="newUser.Password" class="form-control" type="password"/>
+                <ValidationMessage For="() => newUser.Password"/>
+            </div>
+
+            <button class="btn btn-success" disabled="@isBusy">Create</button>
+        </EditForm>
+    </div>
+</div>
+
+
+@if (isLoading)
+{
+    <p>Loading user...</p>
+}
+else if (users.Count == 0)
+{
+    <p>No users found.</p>
+}
+else
+{
+    <table class="table table-striped">
+        <thead>
+        <tr>
+            <th style="width: 90px">Id</th>
+            <th>UserName</th>
+        </tr>
+        </thead>
+        <tbody>
+        @foreach (var u in users)
+        {
+            <tr>
+                <td>@u.Id</td>
+                <td>@u.UserName</td>
+            </tr>
+        }
+        </tbody>
+    </table>
+}
+
+@code{
+
+    private CreateUserFromModel newUser = new();
+    private List<UserDto> users = new();
+    private string? search;
+    private string? error;
+    private bool isLoading;
+    private bool isBusy;
+    public string? Error { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadUsersAsync();
+    }
+
+    private async Task LoadUsersAsync()
+    {
+        error = null;
+        isLoading = true;
+        try
+        {
+            var result = await UserService.GetAllAsync(search);
+            users = result?.ToList() ?? new List<UserDto>();
+        }
+        catch (Exception ex)
+        {
+            error = $"Error loading users: {ex.Message}";
+        }
+        finally
+        {
+            isLoading = false;
+            StateHasChanged();
+        }
+    }
+
+    private void ClearSearch()
+    {
+        search = string.Empty;
+        _ = LoadUsersAsync();
+    }
+
+    private async Task AddUserAsync()
+    {
+        error = null;
+        isBusy = true;
+        try
+        {
+            var dto = new UserCreateDto(newUser.UserName!, newUser.Password!);
+
+            await UserService.AddUserAsync(dto);
+
+            newUser = new CreateUserFromModel();
+            await LoadUsersAsync();
+        }
+        catch (Exception ex)
+        {
+            error = $"Error adding user: {ex.Message}";
+        }
+        finally
+        {
+            isBusy = false;
+        }
+    }
+
+
+    public class CreateUserFromModel
+    {
+        [Required]
+        [MinLength(3)]
+        public string? UserName { get; set; }
+
+        [Required]
+        [MinLength(3)]
+        public string? Password { get; set; }
+    }
+
+}

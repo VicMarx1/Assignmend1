@@ -2,7 +2,6 @@
 using Entities;
 using Microsoft.AspNetCore.Mvc;
 using RepositoryContracts;
-using System.Linq;
 
 [ApiController]
 [Route("api/[controller]")]
@@ -18,7 +17,7 @@ public class PostsController : ControllerBase
         commentRepository = comments;
         userRepository = username;
     }
-    
+
     [HttpPost]
     public async Task<ActionResult<PostDto>> Create([FromBody] PostCreateDto dto)
     {
@@ -45,7 +44,7 @@ public class PostsController : ControllerBase
             if (!includeComments) return Ok(dto);
 
             var comments = commentRepository.GetAll()
-                .Where (c => c.PostId == id)
+                .Where(c => c.PostId == id)
                 .Select(c => new CommentDto(c.Id, c.PostId, c.UserId, c.Body) != null)
                 .ToList();
 
@@ -72,7 +71,7 @@ public class PostsController : ControllerBase
 
         if (!string.IsNullOrWhiteSpace(title))
             postsQuery = postsQuery.Where(p => p.Title.Contains(title, StringComparison.OrdinalIgnoreCase));
-        
+
         if (authorId is not null)
             postsQuery = postsQuery.Where(p => p.UserId == authorId);
 
@@ -84,11 +83,11 @@ public class PostsController : ControllerBase
                 .ToList();
             postsQuery = postsQuery.Where(p => ids.Contains(p.UserId));
         }
-        
+
         var list = postsQuery
             .Select(p => new PostDto(p.Id, p.Title, p.Body, p.UserId, null))
             .ToList();
-        
+
         if (!includeComments)
         {
             var listNoComments = postsQuery
@@ -108,6 +107,5 @@ public class PostsController : ControllerBase
             .ToList();
 
         return Ok(listWithComments);
-
     }
 }

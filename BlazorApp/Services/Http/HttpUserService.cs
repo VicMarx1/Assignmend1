@@ -4,8 +4,11 @@ using ApiContracts;
 namespace BlazorApp.Services;
 
 public class HttpUserService : IUserService
+
 {
+    private static readonly JsonSerializerOptions JsonOpts = new() { PropertyNameCaseInsensitive = true };
     private readonly HttpClient client;
+    private IUserService userServiceImplementation;
 
     public HttpUserService(HttpClient client)
     {
@@ -14,47 +17,49 @@ public class HttpUserService : IUserService
 
     public async Task<UserDto> AddUserAsync(UserCreateDto request)
     {
-        var httpResponse = await client.PostAsJsonAsync("users", request);
-        var response = await httpResponse.Content.ReadAsStringAsync();
-
-        if (!httpResponse.IsSuccessStatusCode)
-            throw new Exception(response);
-
-        return JsonSerializer.Deserialize<UserDto>(response, new JsonSerializerOptions
-        {
-            PropertyNameCaseInsensitive = true
-        })!;
+        var resp = await client.PostAsJsonAsync("api/Users", request);
+        var body = await resp.Content.ReadAsStringAsync();
+        if (!resp.IsSuccessStatusCode) throw new Exception(body);
+        return JsonSerializer.Deserialize<UserDto>(body, JsonOpts)!;
     }
 
     public async Task UpdateUserAsync(int id, UserUpdateDto request)
     {
-        var httpResponse = await client.PutAsJsonAsync($"users/{id}", request);
-        if (!httpResponse.IsSuccessStatusCode)
-        {
-            var msg = await httpResponse.Content.ReadAsStringAsync();
-            throw new Exception(msg);
-        }
+        var resp = await client.PutAsJsonAsync($"api/Users/{id}", request);
+        if (!resp.IsSuccessStatusCode)
+            throw new Exception(await resp.Content.ReadAsStringAsync());
     }
 
     public async Task<UserDto> GetSingleAsync(int id)
     {
-        var result = await client.GetFromJsonAsync<UserDto>($"Users/{id}");
-        return result;
+        return await client.GetFromJsonAsync<UserDto>($"api/Users/{id}")!;
     }
 
-    public Task<IEnumerable<UserDto>> GetAllAsync()
+    public async Task<IEnumerable<UserDto>> GetAllAsync(string? userNameContains = null)
     {
-        var result = client.GetFromJsonAsync<IEnumerable<UserDto>>("users");
-        return result!;
+        var url = "api/Users";
+        if (!string.IsNullOrWhiteSpace(userNameContains))
+            url += $"?userNameContains={Uri.EscapeDataString(userNameContains)}";
+
+        var data = await client.GetFromJsonAsync<IEnumerable<UserDto>>(url);
+        return data ?? Enumerable.Empty<UserDto>();
     }
 
     public async Task DeleteUserAsync(int id)
     {
-        var response = await client.DeleteAsync($"Users/{id}");
-        if (!response.IsSuccessStatusCode)
-        {
-            var msg = await response.Content.ReadAsStringAsync();
-            throw new Exception(msg);
-        }
+        var resp = await client.DeleteAsync($"api/Users/{id}");
+        if (!resp.IsSuccessStatusCode)
+            throw new Exception(await resp.Content.ReadAsStringAsync());
+    }
+
+
+    public async Task<IEnumerable<UserDto>> GetManyAsync(string? userNameContains = null)
+    {
+        var url = "api/Users";
+        if (!string.IsNullOrWhiteSpace(userNameContains))
+            url += $"?userNameContains={Uri.EscapeDataString(userNameContains)}";
+
+        var data = await client.GetFromJsonAsync<IEnumerable<UserDto>>(url);
+        return data ?? Enumerable.Empty<UserDto>();
     }
 }
