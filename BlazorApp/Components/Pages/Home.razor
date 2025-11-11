@@ -1,7 +1,78 @@
 ﻿@page "/"
+@using BlazorApp.Auth
+@inject NavigationManager Nav
+@inject AuthenticationStateProvider Auth
 
 <PageTitle>Home</PageTitle>
+<h1>Home</h1>
 
-<h1>Hello, world!</h1>
+<AuthorizeView Context="auth">
+    <Authorized>
+        <h2>Welcome, @auth.User.Identity!.Name!</h2>
+        <p>You are successfully logged in.</p>
 
-Welcome to your new app.
+        <button class="btn btn-danger" @onclick="Logout">Log out</button>
+    </Authorized>
+    
+    <NotAuthorized>
+        <h3>Log in</h3>
+
+        <EditForm Model="@model" OnValidSubmit="HandleLogin">
+            <div class="mb-2">
+                <label>Username:</label>
+                <InputText class="form-control" @bind-Value="model.Username" />
+            </div>
+
+            <div class="mb-2">
+                <label>Password:</label>
+                <InputText class="form-control" type="password" @bind-Value="model.Password" />
+            </div>
+
+            @if (!string.IsNullOrWhiteSpace(error))
+            {
+                <div class="alert alert-danger">@error</div>
+            }
+
+            <button type="submit" class="btn btn-primary" disabled="@loading">
+                @(loading ? "Logging in..." : "Log in")
+            </button>
+        </EditForm>
+    </NotAuthorized>
+</AuthorizeView>
+
+@code {
+    private LoginVm model = new();
+    private string? error;
+    private bool loading;
+
+    private async Task HandleLogin()
+    {
+        error = null;
+        loading = true;
+        try
+        {
+            await ((SimpleAuthProvider)Auth).Login(model.Username, model.Password);
+            Nav.NavigateTo("/", true); // reload siden efter login
+        }
+        catch (Exception ex)
+        {
+            error = ex.Message;
+        }
+        finally
+        {
+            loading = false;
+        }
+    }
+
+    private async Task Logout()
+    {
+        await ((SimpleAuthProvider)Auth).Logout();
+        Nav.NavigateTo("/", true);
+    } 
+        
+    private sealed class LoginVm
+    {
+        public string Username { get; set; } = "";
+        public string Password { get; set; } = "";
+    }
+}

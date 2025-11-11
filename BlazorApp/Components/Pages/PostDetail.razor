@@ -1,7 +1,8 @@
 ﻿@page "/posts/{id:int}"
 @using ApiContracts
+@using BlazorApp.Services
 @inject NavigationManager Nav
-@inject Services.IPostService PostService
+@inject IPostService PostService
 
 <h3>Post details</h3>
 <div class="d-flex justify-content-end mb-3">
@@ -59,4 +60,5 @@ else
             error = $"Could not load post {id}: {ex.Message}";
         }
     }
+
 }

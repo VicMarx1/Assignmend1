@@ -5,11 +5,12 @@ namespace BlazorApp.Services;
 
 public class HttpPostService : IPostService
 {
-    private readonly HttpClient client;
-    private static readonly JsonSerializerOptions JsonOpts = new() 
+    private static readonly JsonSerializerOptions JsonOpts = new()
     {
         PropertyNameCaseInsensitive = true
     };
+
+    private readonly HttpClient client;
 
     public HttpPostService(HttpClient client)
     {
@@ -52,7 +53,7 @@ public class HttpPostService : IPostService
     public async Task<IEnumerable<PostDto>> GetAllAsync()
     {
         return await client.GetFromJsonAsync<IEnumerable<PostDto>>("api/Posts", JsonOpts)
-            ?? Enumerable.Empty<PostDto>();
+               ?? Enumerable.Empty<PostDto>();
     }
 
     public async Task DeletePostAsync(int id)
