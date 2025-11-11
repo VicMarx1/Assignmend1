@@ -6,6 +6,10 @@ namespace BlazorApp.Services;
 public class HttpPostService : IPostService
 {
     private readonly HttpClient client;
+    private static readonly JsonSerializerOptions JsonOpts = new() 
+    {
+        PropertyNameCaseInsensitive = true
+    };
 
     public HttpPostService(HttpClient client)
     {
@@ -20,10 +24,7 @@ public class HttpPostService : IPostService
         if (!httpResponse.IsSuccessStatusCode)
             throw new Exception(response);
 
-        return JsonSerializer.Deserialize<PostDto>(response, new JsonSerializerOptions
-        {
-            PropertyNameCaseInsensitive = true
-        })!;
+        return JsonSerializer.Deserialize<PostDto>(response, JsonOpts)!;
     }
 
     public async Task UpdatePostAsync(int id, PostUpdateDto request)
@@ -36,16 +37,22 @@ public class HttpPostService : IPostService
         }
     }
 
-    public async Task<PostDto> GetSingleAsync(int id)
+    public async Task<PostDto> GetSingleAsync(int id, bool includeComments)
     {
-        var result = await client.GetFromJsonAsync<PostDto>($"api/Posts/{id}");
-        return result;
+        var url = $"api/Posts/{id}?includeComments={(includeComments ? "true" : "false")}";
+        var response = await client.GetAsync(url);
+        var json = await response.Content.ReadAsStringAsync();
+
+        if (!response.IsSuccessStatusCode)
+            throw new Exception(json);
+
+        return JsonSerializer.Deserialize<PostDto>(json, JsonOpts)!;
     }
 
-    public Task<IEnumerable<PostDto>> GetAllAsync()
+    public async Task<IEnumerable<PostDto>> GetAllAsync()
     {
-        var result = client.GetFromJsonAsync<IEnumerable<PostDto>>("api/Posts");
-        return result!;
+        return await client.GetFromJsonAsync<IEnumerable<PostDto>>("api/Posts", JsonOpts)
+            ?? Enumerable.Empty<PostDto>();
     }
 
     public async Task DeletePostAsync(int id)

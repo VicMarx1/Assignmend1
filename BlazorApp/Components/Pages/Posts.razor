@@ -1,9 +1,14 @@
-﻿@page "/Posts"
+﻿@page "/posts"
 @using ApiContracts
 @using BlazorApp.Services
+@inject NavigationManager Nav
 @inject IPostService PostService
 
 <h3 class="mb-3">All Posts</h3>
+
+<button class="btn btn-primary mb-3" @onclick='() => Nav.NavigateTo("/posts/new")'>
+    Create New Post
+</button>
 
 @if (posts is null)
 {
@@ -19,7 +24,7 @@ else
         @foreach (var p in posts)
         {
             <li class="list-group-item">
-                <a href="@($"/Post/{p.Id}")" class="fw-bold">@p.Title</a>
+                <a href='@($"/posts/{p.Id}")' class="fw-bold">@p.Title</a>
             </li>
         }
     </ul>
@@ -39,5 +44,4 @@ else
             Console.WriteLine($"Error loading posts: {ex.Message}");
         }
     }
-
 }

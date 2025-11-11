@@ -45,14 +45,10 @@ public class PostsController : ControllerBase
 
             var comments = commentRepository.GetAll()
                 .Where(c => c.PostId == id)
-                .Select(c => new CommentDto(c.Id, c.PostId, c.UserId, c.Body) != null)
+                .Select(c => new CommentDto(c.Id, c.PostId, c.UserId, c.Body))
                 .ToList();
 
-            return Ok(new
-            {
-                Post = dto,
-                Comments = comments
-            });
+            return Ok(new PostDto(post.Id, post.Title, post.Body, post.UserId, comments));
         }
         catch (InvalidOperationException)
         {

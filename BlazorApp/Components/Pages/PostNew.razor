@@ -1,0 +1,85 @@
+﻿@page "/posts/new"
+@using System.ComponentModel.DataAnnotations
+@using ApiContracts
+@using BlazorApp.Services
+@inject IPostService PostService
+@inject IUserService UserService
+@inject NavigationManager Nav
+
+<h3>Create New Post</h3>
+
+@if (!string.IsNullOrWhiteSpace(error))
+{
+    <div class="alert alert-danger">@error</div>
+}
+
+<EditForm Model="form" OnValidSubmit="CreateAsync">
+    <DataAnnotationsValidator/>
+    <ValidationSummary/>
+
+    <div class="mb-3">
+        <label class="form-label">Title</label>
+        <InputText @bind-Value="form.Title" class="form-control"></InputText>
+        <ValidationMessage For="() => form.Title"/>
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Body</label>
+        <InputTextArea @bind-Value="form.Body" class="form-control" rows="5"/>
+        <ValidationMessage For="() => form.Body"/>
+    </div>
+
+    <div class="mb-3">
+        <Label class="form-label">Author</Label>
+        <InputSelect @bind-Value="form.UserId" class="form-select">
+            <option value="">--- Choose Author ---</option>
+            @foreach (var u in users)
+            {
+                <option value="@u.Id">@u.UserName (@u.Id)</option>
+            }
+        </InputSelect>
+        <ValidationMessage For="() => form.UserId"></ValidationMessage>
+    </div>
+
+    <button class="btn btn-success" disabled="@isBusy">Create</button>
+</EditForm>
+
+@code {
+    private NewPost form = new();
+    private List<UserDto> users = new();
+    private string? error;
+    private bool isBusy;
+
+    protected override async Task OnInitializedAsync()
+    {
+        users = (await UserService.GetAllAsync()).ToList();
+    }
+
+    private async Task CreateAsync()
+    {
+        error = null;
+        isBusy = true;
+        try
+        {
+            var dto = new PostCreateDto(form.Title!, form.Body!, form.UserId!.Value);
+            var created = await PostService.AddPostAsync(dto);
+            Nav.NavigateTo($"posts/{created.Id}");
+        }
+        catch (Exception ex)
+        {
+            error = ex.Message;
+        }
+        finally
+        {
+            isBusy = false;
+        }
+    }
+
+    public class NewPost
+    {
+        [Required][MinLength(3)] public string? Title { get; set; }
+        [Required][MinLength(3)] public string? Body { get; set; }
+        [Required] public int? UserId { get; set; }
+    }
+
+}
