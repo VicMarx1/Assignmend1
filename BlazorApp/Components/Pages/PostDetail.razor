@@ -1,8 +1,12 @@
 ﻿@page "/posts/{id:int}"
 @using ApiContracts
+@inject NavigationManager Nav
 @inject Services.IPostService PostService
 
 <h3>Post details</h3>
+<div class="d-flex justify-content-end mb-3">
+    <button class="btn btn-secondary mb-3" @onclick="GoBack">Back</button>
+</div>
 
 @if (error is not null)
 {
@@ -38,6 +42,11 @@ else
     [Parameter] public int id { get; set; }
     private PostDto? post;
     private string? error;
+
+    private void GoBack()
+    {
+        Nav.NavigateTo("/posts");
+    }
 
     protected override async Task OnParametersSetAsync()
     {
