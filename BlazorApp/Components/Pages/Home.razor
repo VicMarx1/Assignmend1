@@ -13,19 +13,19 @@
 
         <button class="btn btn-danger" @onclick="Logout">Log out</button>
     </Authorized>
-    
+
     <NotAuthorized>
         <h3>Log in</h3>
 
         <EditForm Model="@model" OnValidSubmit="HandleLogin">
             <div class="mb-2">
                 <label>Username:</label>
-                <InputText class="form-control" @bind-Value="model.Username" />
+                <InputText class="form-control" @bind-Value="model.Username"/>
             </div>
 
             <div class="mb-2">
                 <label>Password:</label>
-                <InputText class="form-control" type="password" @bind-Value="model.Password" />
+                <InputText class="form-control" type="password" @bind-Value="model.Password"/>
             </div>
 
             @if (!string.IsNullOrWhiteSpace(error))
@@ -41,7 +41,7 @@
 </AuthorizeView>
 
 @code {
-    private LoginVm model = new();
+    private readonly LoginVm model = new();
     private string? error;
     private bool loading;
 
@@ -68,11 +68,12 @@
     {
         await ((SimpleAuthProvider)Auth).Logout();
         Nav.NavigateTo("/", true);
-    } 
-        
+    }
+
     private sealed class LoginVm
     {
         public string Username { get; set; } = "";
         public string Password { get; set; } = "";
     }
+
 }
